@@ -1,0 +1,76 @@
+﻿@using eTicketSystem.Models.Common
+@model PagedResult<Cinema>
+
+@{
+    ViewData["Title"] = "Movie List";
+}
+@using (Html.BeginForm())  
+{  
+    <p>  
+        Search Title: @Html.TextBox("SearchString")  
+        <input type="submit" value="Search" />  
+    </p>  
+}  
+<table class="table">
+    <thead>
+        <tr>
+            <th style="width:10%;">
+                @Html.ActionLink("Poster", "Index", new { sortField = "ImageURL", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
+            </th>
+            <th style="width:20%;">
+                @Html.ActionLink("Name", "Index", new { sortField = "Name", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
+            </th>
+            <th style="width:10%;">
+                @Html.ActionLink("Description", "Index", new { sortField = "Description", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
+            </th>
+            <th style="width:15%;">
+                @*<a asp-page="./index"
+                           asp-route-SortField="StartDate"
+                           asp-route-SortDir="@Model.SortDir"
+                           asp-route-SortDirNext="@Model.SortDirNext"
+                           asp-route-PageSize="@Model.PageSize"
+                           asp-route-PageNumber="@Model.PageNumber">
+                            Customer ID
+                        </a>*@
+                @Html.ActionLink("StartDate", "Index", new { sortField = "StartDate", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
+            </th>
+            <th style="width:15%;">
+                @Html.ActionLink("EndDate", "Index", new { sortField = "EndDate", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
+            </th>
+            <th style="width:10%;">
+                @*<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["currentFilter"]">Last Name</a>*@
+                Cinema
+            </th>
+            <th style="width:10%;">
+                @*@Html.ActionLink("MovieCategory", "Index", new { sortField = "MovieCategory", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })  *@
+            </th>
+            <th style="width:10%;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Results)
+        {
+            <tr>
+                <td>
+                    <img class="rounded-circle grid-img" src="@item.Logo" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+               
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+@for (var p = 1; p <= Model.PageCount; p++)
+{
+    <a href="@Url.Action("Index", new { pageNo = p })" class="btn btn-default">@p</a>
+}

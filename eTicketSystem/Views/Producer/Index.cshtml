@@ -4,15 +4,19 @@
 @{
     ViewData["Title"] = "Movie List";
 }
-@using (Html.BeginForm())  
-{  
-    <p>  
-        Search Title: @Html.TextBox("SearchString")  
-        <input type="submit" value="Search" />  
-    </p>  
-}  
-<table class="table">
-    <thead>
+@using (Html.BeginForm())
+{
+    <p>
+        Search Title: @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    
+        <a class="btn btn-labeled btn-success float-end" asp-action="Create">
+            <span class="btn-label"><i class="bi bi-plus"></i></span>Create
+        </a>
+    </p>
+}
+<table class="table table-responsive">
+    <thead class="table-dark">
         <tr>
             <th style="width:10%;">
                 @Html.ActionLink("Poster", "Index", new { sortField = "ImageURL", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
@@ -63,7 +67,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Info)
                 </td>
-                
+                <td>
+                    
+                </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id })

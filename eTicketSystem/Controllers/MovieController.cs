@@ -1,4 +1,5 @@
 ﻿using eTicketSystem.Data;
+using eTicketSystem.Data.Interface;
 using eTicketSystem.Models;
 using eTicketSystem.Models.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -11,24 +12,25 @@ namespace eTicketSystem.Controllers
 {
     public class MovieController : Controller
     {
-        private readonly ETicketDBContext _context = null;
-        public MovieController(ETicketDBContext context)
+        private readonly IMovieService _service = null;
+        public MovieController(IMovieService serv)
         {
-            _context = context;
+            _service = serv;
         }
         //public async Task<IActionResult> Index()
         //{
         //    var data = await _context.Movies.ToListAsync();
         //    return View(data);
         //}
-
-        public async Task<IActionResult> Index(string sortField, string currentSortField, string currentSortOrder, string currentFilter, string SearchString="",
- int pageNo=1)
-        {//https://dotnetlead.com/net/paging-and-sorting-using-asp-net-core-razor-page-web-api-and-entity-framework/2267/
+        //public async Task<IActionResult> Index(string sortField, string currentSortField, string currentSortOrder, string currentFilter, string SearchString="", int pageNo=1)
+        public IActionResult Index()
+        {
+            //https://dotnetlead.com/net/paging-and-sorting-using-asp-net-core-razor-page-web-api-and-entity-framework/2267/
             //https://www.codingame.com/playgrounds/5363/paging-with-entity-framework-core
             //https://localhost:7091/Movie?sortField=Description&currentSortField=Name&currentSortOrder=Desc
-            var employees = _context.Movies.AsNoTracking();//.AsQueryable();
 
+            var employees = _service.GetAll(x => x.Cinema);
+            /*
             if (SearchString != null)
             {
                 pageNo = 1;
@@ -74,11 +76,13 @@ namespace eTicketSystem.Controllers
             //}
             var wemployees = employees.GetPaged(pageNo, 10);
             //int pageSize = 3;
-            return View(wemployees);
+            */
+            return View(employees);
         }
 
-        public async Task<IActionResult> IndexDB()
+        public IActionResult IndexDB()
         {
+            /*
             //using (var dbContext = new dbContext())
             {
                 //await _context.Database.EnsureDeletedAsync();
@@ -93,6 +97,7 @@ namespace eTicketSystem.Controllers
                     new MediaTypeWithQualityHeaderValue("application/json"));
                 using (HttpResponseMessage response = await client.GetAsync($"{key}/k_pysckjz9").ConfigureAwait(false))
                 {
+
                     var responseContent = response.Content.ReadAsStringAsync().Result;
                     response.EnsureSuccessStatusCode();
                     var resp = JsonConvert.DeserializeObject<Top250Data>(responseContent);
@@ -135,29 +140,12 @@ namespace eTicketSystem.Controllers
                 //Logic for handling unsuccessful response
             }
             //var userList = JsonSerializer.Deserialize(response.Content);
-
+            */
+            return View();
 
         }
 
     }
 
-    public class Top250Data
-    {
-        public List<Top250DataDetail> Items { get; set; }
-
-        public string ErrorMessage { get; set; }
-    }
-
-    public class Top250DataDetail
-    {
-        public string Id { get; set; }
-        public string Rank { get; set; }
-        public string Title { set; get; }
-        public string FullTitle { set; get; }
-        public string Year { set; get; }
-        public string Image { get; set; }
-        public string Crew { get; set; }
-        public string IMDbRating { get; set; }
-        public string IMDbRatingCount { get; set; }
-    }
+    
 }

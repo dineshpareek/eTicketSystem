@@ -1,119 +1,109 @@
 ﻿@using eTicketSystem.Models.Common
-@model PagedResult<Movie>
+@model IEnumerable<Movie>
 
 @{
     ViewData["Title"] = "Movie List";
 }
-@using (Html.BeginForm())  
-{  
-    <p>  
-        Search Title: @Html.TextBox("SearchString")  
-        <input type="submit" value="Search" />  
-    </p>  
-}  
-<table class="table">
-    <thead>
-        <tr>
-            <th style="width:10%;">
-                @Html.ActionLink("Poster", "Index", new { sortField = "ImageURL", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
-            </th>
-            <th style="width:20%;">
-                @Html.ActionLink("Name", "Index", new { sortField = "Name", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
-            </th>
-            <th style="width:10%;">
-                @Html.ActionLink("Description", "Index", new { sortField = "Description", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
-            </th>
-            <th style="width:15%;">
-                @*<a asp-page="./index"
-                           asp-route-SortField="StartDate"
-                           asp-route-SortDir="@Model.SortDir"
-                           asp-route-SortDirNext="@Model.SortDirNext"
-                           asp-route-PageSize="@Model.PageSize"
-                           asp-route-PageNumber="@Model.PageNumber">
-                            Customer ID
-                        </a>*@
-                @Html.ActionLink("StartDate", "Index", new { sortField = "StartDate", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
-            </th>
-            <th style="width:15%;">
-                @Html.ActionLink("EndDate", "Index", new { sortField = "EndDate", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })
-            </th>
-            <th style="width:10%;">
-                @*<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["currentFilter"]">Last Name</a>*@
-                Cinema
-            </th>
-            <th style="width:10%;">
-                @*@Html.ActionLink("MovieCategory", "Index", new { sortField = "MovieCategory", currentSortField = ViewBag.SortField, currentSortOrder = ViewBag.SortOrder, currentFilter = ViewBag.CurrentFilter })  *@
-            </th>
-            <th style="width:10%;"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Results)
-        {
-            <tr>
-                <td>
-                    <img class="rounded-circle grid-img" src="@item.ImageURL" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
-                </td>
-                <td>
-                    @*<img class="rounded-circle grid-img" src="@item.Cinema.Logo"/>
-                        @Html.DisplayFor(modelItem => item.Cinema.Name)  *@
-                </td>
-                <td>
-                    @*@Html.DisplayFor(modelItem => item.MovieCategory.ToString())  *@
-                </td>
-                @*<td>
-                    @Html.DisplayFor(modelItem => item.)
-                    </td>
-                    <td>
-                    @Html.DisplayFor(modelItem => item.City)
-                    </td>  *@
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@using (Html.BeginForm())
+{
+    <p>
+        Search Title: @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+}
+
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 col-xs-6 border-primary mb-3">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-12">
+                        <div class="card-header text-white bg-info">
+                                <h6 class="card-title">
+                                    @item.Title
+                                    @*@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    {
+                                        <a class="text-white float-right" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                                    }*@
+                                </h6>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <img src="@item.ImageURL" width="100%" alt="@item.fullTitle">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <p class="card-text">@item.Description</p>
+                            <p class="card-text"><b>Cinema: </b>@item.Cinema.Name</p>
+                            <p class="card-text"><b>Category: </b>@item.MovieCategory</p>
+                            <p class="card-text"><b>Start Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
+                            <p class="card-text"><b>End Date: </b>@item.EndDate.ToString("dd MMM yy")</p>
+                            <p class="card-text ">
+                                <b>Status: </b>
+                                @if (DateTime.Now >= item.StartDate && DateTime.Now <= item.EndDate)
+                                {
+                                    <span class="badge bg-success text-white">AVAILABLE</span>
+                                }
+                                else if (DateTime.Now > item.EndDate)
+                                {
+                                    <span class="badge bg-danger text-white">EXPIRED</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary text-white">UPCOMING</span>
+                                }
+                            </p>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card-footer ">
+                            <p class="card-text">
+                                <a class="btn btn-outline-primary float-right" asp-action="Details" asp-route-id="@item.Id">
+                                    <i class="bi bi-eye-fill"></i> Show Details
+                                </a>
+                                <a class="btn btn-success text-white @((DateTime.Now > item.EndDate) ? "disabled" : "")" 
+                                   asp-controller="Orders" 
+                                   asp-action="AddItemToShoppingCart" 
+                                   asp-route-id="@item.Id">
+                                <i class="bi bi-cart-plus"></i> Add to Cart (Price @item.Price.ToString("c"))</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 <br />
-@for (var p = 1; p <= Model.PageCount; p++)
+@*@for (var p = 1; p <= Model.PageCount; p++)
 {
     <a href="@Url.Action("Index", new { pageNo = p })" class="btn btn-default">@p</a>
-}
+}*@
 @*
-@{
+    @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
     var totalPageNo = Model.TotalPageNo;
     var currentPageNo = Model.PageIndex;
-}
+    }
 
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNo="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
+    <a asp-action="Index"
+    asp-route-sortOrder="@ViewData["CurrentSort"]"
+    asp-route-pageNo="@(Model.PageIndex - 1)"
+    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+    class="btn btn-default @prevDisabled">
     Previous
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNo="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
+    </a>
+    <a asp-action="Index"
+    asp-route-sortOrder="@ViewData["CurrentSort"]"
+    asp-route-pageNo="@(Model.PageIndex + 1)"
+    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+    class="btn btn-default @nextDisabled">
     Next
-</a>
-<span>
+    </a>
+    <span>
     Page No : @currentPageNo of @totalPageNo
-</span> *@
+    </span> *@

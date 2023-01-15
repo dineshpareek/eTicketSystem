@@ -11,13 +11,15 @@ namespace eTicketSystem.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Actor_Movie>().HasKey(mp => new
+            modelBuilder.Entity<Actor_Movie>().HasKey(am => new
             {
-                mp.MovieId,
-                mp.ActorId
+                am.ActorId,
+                am.MovieId
             });
+
             modelBuilder.Entity<Actor_Movie>().HasOne(m => m.Movie).WithMany(am => am.Actors_Movies).HasForeignKey(m => m.MovieId);
-            modelBuilder.Entity<Actor_Movie>().HasOne(m => m.Actor).WithMany(am => am.Actor_Movie).HasForeignKey(m => m.ActorId);
+            modelBuilder.Entity<Actor_Movie>().HasOne(m => m.Actor).WithMany(am => am.Actors_Movies).HasForeignKey(m => m.ActorId);
+
             base.OnModelCreating(modelBuilder);
         }
 

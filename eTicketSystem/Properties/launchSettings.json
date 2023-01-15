@@ -10,6 +10,7 @@
   "profiles": {
     "eTicketSystem": {
       "commandName": "Project",
+      "launchUrl": "Movie",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7091;http://localhost:5091",
